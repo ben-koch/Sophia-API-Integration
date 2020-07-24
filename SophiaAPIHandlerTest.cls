@@ -1,0 +1,20 @@
+@isTest
+public class SophiaAPIHandlerTest {
+	
+    static testmethod void testCallout() {
+        
+                API_Setting__mdt settings = [SELECT Endpoint__c, oauth_consumer_key__c, oauth_shared_secret__c, 
+                                        oauth_signature_method__c, Username__c, Password__c 
+                                        FROM API_Setting__mdt
+                                        WHERE Label = 'Sophia API'];
+        
+        String jsonStr = '{"response_code":1,"data":{"student":{"id":574286,"external_id":"2402673","first_name":"Aaron","last_name":"Dougherty","email":"aaronjames1692@gmail.com"},"courses":[{"id":64,"title":"USHistoryII","activity":{"state":"active","start_date":"2020-01-16","end_date":"2020-03-16","total_time":17010,"last_activity_date":"2020-03-02","days_remaining":0,"course_registration_date":"2020-01-16","tutorial_views":18,"engaged_date":"2020-01-22"},"units":[{"name":"TheUnitedStatesAfterReconstruction:1877-1900","items":[{"total_questions":7,"attempted":7,"correct":6,"incorrect":1,"pts_earned":6,"type":"Challenge"},{"total_questions":7,"attempted":7,"correct":5,"incorrect":2,"pts_earned":5,"type":"Challenge"},{"total_questions":12,"attempted":12,"correct":12,"incorrect":0,"pts_earned":12,"type":"Challenge"},{"total_questions":7,"attempted":7,"correct":6,"incorrect":1,"pts_earned":6,"type":"Challenge"},{"total_questions":25,"correct":20,"incorrect":5,"started_at":"2020-01-26T22:10:17-06:00","pts_earned":40,"type":"Milestone"}]},{"name":"TheEmergenceoftheModernState:1890-1940","items":[{"total_questions":11,"attempted":11,"correct":9,"incorrect":2,"pts_earned":9,"type":"Challenge"},{"total_questions":8,"attempted":8,"correct":4,"incorrect":4,"pts_earned":4,"type":"Challenge"},{"total_questions":8,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":8,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":25,"type":"Milestone"}]},{"name":"TheUnitedStatesatMid-Century:1939-1969","items":[{"total_questions":9,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":8,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":7,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":11,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":25,"type":"Milestone"}]},{"name":"TheRecentPast1970-2016","items":[{"total_questions":7,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":9,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":7,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":9,"attempted":0,"correct":0,"incorrect":0,"pts_earned":0,"type":"Challenge"},{"total_questions":25,"type":"Milestone"}]}],"overview":{"total_points":82,"score":0.8,"best_possibble_score":0.94,"total_challenges":16,"total_milestones":4,"total_touchstones":0,"total_milestones_number":4,"challenges_completed":6,"milestones_completed":1,"challenge_pts_earned":42,"challenge_pts_still_available":83,"challenges_failed":0,"milestone_pts_earned":40,"milestone_pts_still_available":150,"milestones_failed":0,"touchstone_pts_earned":0,"touchstone_pts_still_available":0,"touchstone_failed":0,"final_mls_pts_earned":0,"avg_milestones_score":0.8}}]}}';
+        Contact student = New Contact(FirstName='Testy', LastName='Tester', Email='test@email.com');
+        insert student;
+        SophiaAPIHandler aHandler = New SophiaAPIHandler();
+        SophiaJSONHandler jHandler = SophiaJSONHandler.parse(jsonStr);      
+        List<SophiaAPIHandler.DummyCourse> courses = aHandler.createDummyCourses(jsonStr);
+        Sophia_Course__c sophiaCourse = aHandler.createSophiaCourse(jHandler, student);
+        
+    }
+}
